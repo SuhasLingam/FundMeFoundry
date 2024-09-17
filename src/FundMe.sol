@@ -11,8 +11,8 @@ contract FundMe {
     using PriceConverter for uint256;
     uint256 public constant minimumUSD = 5e18;
     address public immutable i_owner;
-    address[] public allFundersAddress;
-    mapping(address => uint256) public amountFunded;
+    address[] private s_allFundersAddress;
+    mapping(address => uint256) private s_addressToAmountFunded;
     AggregatorV3Interface private s_priceFeed;
 
     modifier ownerOnly() {
@@ -34,16 +34,16 @@ contract FundMe {
             msg.value.convertPrice(s_priceFeed) >= minimumUSD,
             "Insufficient funds transferred"
         );
-        allFundersAddress.push(msg.sender);
-        amountFunded[msg.sender] += msg.value;
+        s_allFundersAddress.push(msg.sender);
+        s_addressToAmountFunded[msg.sender] += msg.value;
     }
 
     function withdraw() public ownerOnly {
-        for (uint256 i = 0; i < allFundersAddress.length; i++) {
-            address funder = allFundersAddress[i];
-            amountFunded[funder] = 0;
+        for (uint256 i = 0; i < s_allFundersAddress.length; i++) {
+            address funder = s_allFundersAddress[i];
+            s_addressToAmountFunded[funder] = 0;
         }
-        allFundersAddress = new address[](0);
+        s_allFundersAddress = new address[](0);
         (bool success, ) = payable(msg.sender).call{
             value: address(this).balance
         }("");
@@ -59,6 +59,16 @@ contract FundMe {
     }
 
     /**
-     * View Functions for testing
+     * View / pure Functions for testing getter Functions
      */
+
+    function getAmountUsingAddress(
+        address _address
+    ) external view returns (uint256) {
+        return s_addressToAmountFunded[_address];
+    }
+
+    function getFunderAddress(uint256 index) external view returns (address) {
+        return s_allFundersAddress[index];
+    }
 }
