@@ -10,7 +10,7 @@ error FundMe__NotOwner();
 contract FundMe {
     using PriceConverter for uint256;
     uint256 public constant minimumUSD = 5e18;
-    address public immutable i_owner;
+    address private immutable i_owner;
     address[] private s_allFundersAddress;
     mapping(address => uint256) private s_addressToAmountFunded;
     AggregatorV3Interface private s_priceFeed;
@@ -50,6 +50,10 @@ contract FundMe {
         require(success, "Withdraw Failed Using Call Method");
     }
 
+    function checkBalance() public view returns (uint256) {
+        return address(this).balance;
+    }
+
     receive() external payable {
         fund();
     }
@@ -70,5 +74,9 @@ contract FundMe {
 
     function getFunderAddress(uint256 index) external view returns (address) {
         return s_allFundersAddress[index];
+    }
+
+    function onlyOwner() external view returns (address) {
+        return i_owner;
     }
 }
