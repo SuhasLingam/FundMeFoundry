@@ -39,8 +39,8 @@ _[⭐️ Updraft | Foundry Fund Me](https://updraft.cyfrin.io/courses/foundry/fo
 ## Quickstart
 
 ```
-git clone https://github.com/Cyfrin/foundry-fund-me-cu
-cd foundry-fund-me-cu
+git clone https://github.com/SuhasLingam/FundMeFoundry.git
+cd FundMeFoundry
 make
 ```
 
@@ -55,7 +55,7 @@ If you can't or don't want to run and install locally, you can work with this re
 ## Deploy
 
 ```
-forge script script/DeployFundMe.s.sol
+forge script script/FundMe.s.sol
 ```
 
 ## Testing
@@ -134,7 +134,7 @@ Head over to [faucets.chain.link](https://faucets.chain.link/) and get some test
 3. Deploy
 
 ```
-forge script script/DeployFundMe.s.sol --rpc-url $SEPOLIA_RPC_URL --private-key $PRIVATE_KEY --broadcast --verify --etherscan-api-key $ETHERSCAN_API_KEY
+forge script script/FundMe.s.sol --rpc-url $SEPOLIA_RPC_URL --private-key $PRIVATE_KEY --broadcast --verify --etherscan-api-key $ETHERSCAN_API_KEY
 ```
 
 ## Scripts
