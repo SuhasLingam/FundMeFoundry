@@ -38,6 +38,19 @@ contract FundMe {
         s_addressToAmountFunded[msg.sender] += msg.value;
     }
 
+    function withdrawCheaper() public ownerOnly {
+        uint256 fundersLength = s_allFundersAddress.length;
+        for (uint256 i = 0; i < fundersLength; i++) {
+            address funder = s_allFundersAddress[i];
+            s_addressToAmountFunded[funder] = 0;
+        }
+        s_allFundersAddress = new address[](0);
+        (bool success, ) = payable(msg.sender).call{
+            value: address(this).balance
+        }("");
+        require(success, "Withdraw Failed Using Call Method");
+    }
+
     function withdraw() public ownerOnly {
         for (uint256 i = 0; i < s_allFundersAddress.length; i++) {
             address funder = s_allFundersAddress[i];

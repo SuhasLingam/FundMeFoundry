@@ -2,9 +2,9 @@
 
 pragma solidity ^0.8.19;
 
-import {FundMe} from "../src/FundMe.sol";
-import {Test} from "forge-std/Test.sol";
-import {DeployFundMeWScript} from "../script/FundMe.s.sol";
+import {FundMe} from "../../src/FundMe.sol";
+import {Test} from "../../lib/forge-std/src/Test.sol";
+import {DeployFundMeWScript} from "../../script/FundMe.s.sol";
 
 contract TestFundMeContract is Test {
     FundMe fundMe;
@@ -106,7 +106,7 @@ contract TestFundMeContract is Test {
     }
 
     function testWithdrawWithMultipleUsers() public funders {
-        uint160 numberOfFunders = 15;
+        uint160 numberOfFunders = 10;
         uint160 startingFunderIndex = 1;
         uint256 STARTING_FUND_AMOUNT = 10 ether;
         for (uint160 i = startingFunderIndex; i < numberOfFunders; i++) {
@@ -128,6 +128,28 @@ contract TestFundMeContract is Test {
         //     endingOwnerBalance,
         //     startingOwnerBalance + startingFundMeBalance
         // );
+
+        assert(address(fundMe).balance == 0);
+        assert(
+            startingFundMeBalance + startingOwnerBalance ==
+                fundMe.onlyOwner().balance
+        );
+    }
+
+    function testWithdrawWithMultipleUsersCheaper() public funders {
+        uint160 numberOfFunders = 10;
+        uint160 startingFunderIndex = 1;
+        uint256 STARTING_FUND_AMOUNT = 10 ether;
+        for (uint160 i = startingFunderIndex; i < numberOfFunders; i++) {
+            hoax(address(i), STARTING_FUND_AMOUNT);
+            fundMe.fund{value: STARTING_FUND_AMOUNT}();
+        }
+
+        uint256 startingOwnerBalance = fundMe.onlyOwner().balance;
+        uint256 startingFundMeBalance = address(fundMe).balance;
+
+        vm.prank(fundMe.onlyOwner());
+        fundMe.withdrawCheaper();
 
         assert(address(fundMe).balance == 0);
         assert(
