@@ -2,7 +2,6 @@
 
 pragma solidity ^0.8.19;
 
-import {FundMe} from "../src/FundMe.sol";
 import {Script} from "../lib/forge-std/src/Script.sol";
 import {MockV3Aggregator} from "../test/mocks/MockV3Aggregator.sol";
 
